@@ -1,0 +1,54 @@
+# Build outputs
+build/
+out/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+CTestTestfile.cmake
+Makefile
+cmake_install.cmake
+install_manifest.txt
+
+# Compiled binaries
+*.exe
+*.obj
+*.o
+*.pdb
+*.ilk
+*.exp
+*.lib
+*.dll
+
+# IDE / editor
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# OS junk
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Editor backups / swap
+*~
+*.bak
+*.swp
+*.swo
+
+# Logs and crash dumps
+*.log
+/core
+/core.*
+
+# CMake / clangd helpers (regenerated locally)
+compile_commands.json
+.cache/
+
+# Local-only Claude state
+.claude/
+.claude_trash/
+.claude_snapshots/
+.claude_screenshots/
