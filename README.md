@@ -29,8 +29,7 @@ Runtime assets (`shaders/`, `resources/`, `maps/`) are copied next to it
 automatically.
 
 On Linux you may also need the usual raylib dev headers for X11/Wayland/ALSA;
-on Ubuntu: `sudo apt install libx11-dev libxrandr-dev libxinerama-dev
-libxcursor-dev libxi-dev libgl1-mesa-dev libasound2-dev`.
+on Ubuntu: `sudo apt install libasound2-dev libx11-dev libxrandr-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev`.
 
 ## Reverse engineering
 
