@@ -131,13 +131,20 @@ void Player::UpdateBlinkAnimation(float dt) {
 
 Vector2 Player::GetInputDirection() noexcept {
     // Latch the most recently requested direction and keep it until the player
-    // asks for a different one. The previous "only while key is held" design
-    // dropped brief taps that ended before ProcessMovement reached the next
-    // tile-center (where queuedDir is consumed).
-    if (IsKeyPressed(KEY_UP)    || IsKeyPressed(KEY_W)) m_bufferedInput = { 0.0f, -1.0f };
-    if (IsKeyPressed(KEY_DOWN)  || IsKeyPressed(KEY_S)) m_bufferedInput = { 0.0f,  1.0f };
-    if (IsKeyPressed(KEY_LEFT)  || IsKeyPressed(KEY_A)) m_bufferedInput = { -1.0f, 0.0f };
-    if (IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_D)) m_bufferedInput = {  1.0f, 0.0f };
+    // asks for a *different* one. Re-pressing the current heading must not
+    // overwrite a pending perpendicular turn (e.g. holding Up while moving
+    // right shouldn't be cancelled by a stray Right tap).
+    Vector2 pressed = { 0.0f, 0.0f };
+    if (IsKeyPressed(KEY_UP)    || IsKeyPressed(KEY_W)) pressed = { 0.0f, -1.0f };
+    if (IsKeyPressed(KEY_DOWN)  || IsKeyPressed(KEY_S)) pressed = { 0.0f,  1.0f };
+    if (IsKeyPressed(KEY_LEFT)  || IsKeyPressed(KEY_A)) pressed = { -1.0f, 0.0f };
+    if (IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_D)) pressed = {  1.0f, 0.0f };
+
+    const bool gotPress = (pressed.x != 0.0f || pressed.y != 0.0f);
+    const bool matchesCurrent = (pressed.x == currentDir.x && pressed.y == currentDir.y);
+    if (gotPress && !matchesCurrent) {
+        m_bufferedInput = pressed;
+    }
 
     return m_bufferedInput;
 }
