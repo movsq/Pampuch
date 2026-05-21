@@ -13,6 +13,7 @@ void Player::Reset(GridCoord startPos, const Layout& layout) {
     queuedDir = { 0.0f, 0.0f };
     facingAngle = 0.0f;
     frameCounter = 0;
+    m_bufferedInput = { 0.0f, 0.0f };
     m_timeUntilNextBlink = Utils::RandomFloat(
         Config::Anim::MIN_BLINK_INTERVAL_PLAYER,
         Config::Anim::MAX_BLINK_INTERVAL_PLAYER);
@@ -128,22 +129,17 @@ void Player::UpdateBlinkAnimation(float dt) {
     }
 }
 
-Vector2 Player::GetInputDirection() const noexcept {
-    const bool up    = IsKeyDown(KEY_UP)    || IsKeyDown(KEY_W);
-    const bool down  = IsKeyDown(KEY_DOWN)  || IsKeyDown(KEY_S);
-    const bool left  = IsKeyDown(KEY_LEFT)  || IsKeyDown(KEY_A);
-    const bool right = IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D);
+Vector2 Player::GetInputDirection() noexcept {
+    // Latch the most recently requested direction and keep it until the player
+    // asks for a different one. The previous "only while key is held" design
+    // dropped brief taps that ended before ProcessMovement reached the next
+    // tile-center (where queuedDir is consumed).
+    if (IsKeyPressed(KEY_UP)    || IsKeyPressed(KEY_W)) m_bufferedInput = { 0.0f, -1.0f };
+    if (IsKeyPressed(KEY_DOWN)  || IsKeyPressed(KEY_S)) m_bufferedInput = { 0.0f,  1.0f };
+    if (IsKeyPressed(KEY_LEFT)  || IsKeyPressed(KEY_A)) m_bufferedInput = { -1.0f, 0.0f };
+    if (IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_D)) m_bufferedInput = {  1.0f, 0.0f };
 
-    int x = 0;
-    int y = 0;
-    if (right) x += 1;
-    if (left)  x -= 1;
-    if (down)  y += 1;
-    if (up)    y -= 1;
-
-    if (y != 0) return { 0.0f, static_cast<float>(y) };
-    if (x != 0) return { static_cast<float>(x), 0.0f };
-    return { 0.0f, 0.0f };
+    return m_bufferedInput;
 }
 
 void Player::UpdateFacingAngle(Vector2 dir) noexcept {

@@ -38,8 +38,10 @@ private:
     float m_timeUntilNextBlink = 3.0f;
     bool m_isBlinking = false;
 
+    Vector2 m_bufferedInput{ 0.0f, 0.0f };
+
     void UpdateBlinkAnimation(float dt);
-    [[nodiscard]] Vector2 GetInputDirection() const noexcept;
+    [[nodiscard]] Vector2 GetInputDirection() noexcept;
     void UpdateFacingAngle(Vector2 dir) noexcept;
     void TryStartMovement(const Level& level, const Layout& layout);
     void ProcessMovement(float moveBudget, Level& level, const Layout& layout);
