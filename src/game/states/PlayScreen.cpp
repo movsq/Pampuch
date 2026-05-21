@@ -17,10 +17,6 @@ void Update(Game& game, float dt) {
         game.currentState = GameState::MenuMain;
         return;
     }
-    if (IsKeyPressed(KEY_T)) {
-        game.turboMode = !game.turboMode;
-    }
-
     game.player.Update(dt, game.activeLevel, game.layout, game.waitingForStart, game.turboMode);
 
     if (!game.waitingForStart) {

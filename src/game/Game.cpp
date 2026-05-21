@@ -74,6 +74,9 @@ void Game::HandleGlobalInput() {
     if (IsKeyPressed(KEY_F11)) {
         ToggleFullscreen();
     }
+    if (IsKeyPressed(KEY_T)) {
+        turboMode = !turboMode;
+    }
 }
 
 void Game::ResetLevelState() {
