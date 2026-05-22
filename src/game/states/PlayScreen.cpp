@@ -13,10 +13,6 @@ void Update(Game& game, float dt) {
         game.currentState = GameState::Paused;
         return;
     }
-    if (IsKeyPressed(KEY_ESCAPE)) {
-        game.currentState = GameState::MenuMain;
-        return;
-    }
     game.player.Update(dt, game.activeLevel, game.layout, game.waitingForStart, game.turboMode);
 
     if (!game.waitingForStart) {
@@ -134,8 +130,8 @@ void Draw(Game& game) {
         lifeX += static_cast<float>(MeasureText("+99", fontSize));
     }
 
-    // QUIT (right edge) — ESC hint inlined into the label so it doesn't clip the bar.
-    const char* quitLabel = "MENU [ESC]";
+    // QUIT (right edge)
+    const char* quitLabel = "MENU";
     const float quitBtnW = std::max(110.0f * scale, static_cast<float>(MeasureText(quitLabel, fontSize)) + pad);
     const float quitBtnH = barH * 0.6f;
     const float quitY = (barH - quitBtnH) / 2.0f;
