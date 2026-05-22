@@ -2,7 +2,7 @@
 
 A modernized clone of **Pampuch** (released by ZONER software in 1994, author
 Milan Behro) — a Czech Pac-Man-style arcade game — with ghost AI
-reverse-engineered from the original DOS executable and a built-in level
+reverse-engineered from the original Windows executable and a built-in level
 editor.
 
 Pampuch itself was a remake of **Pampúch a Duch** by Dušan Blaško (1986).

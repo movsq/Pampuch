@@ -6,7 +6,7 @@
 //
 // ASM addresses cited inline are from the IDA disassembly of PAMPUCH_11 and
 // PAMPUCH_35. Game-data struct offsets (e.g. [0x187], [0x36D+i*3]) refer to
-// the original DOS layout reproduced as C++ fields elsewhere.
+// the original 16-bit Windows (NE) layout reproduced as C++ fields elsewhere.
 
 #include "Ghost.h"
 #include "Player.h"
