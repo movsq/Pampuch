@@ -20,10 +20,10 @@ void DrawCenteredTitle(const char* text, int yOffset, int fontSize, Color color)
 } // namespace GameHelpers
 
 Game::Game() {
-    SetExitKey(KEY_NULL);
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
 
     InitWindow(Config::Window::INITIAL_WIDTH, Config::Window::INITIAL_HEIGHT, Config::Window::TITLE);
+    SetExitKey(KEY_NULL);
     layout.Update(Config::Window::INITIAL_WIDTH, Config::Window::INITIAL_HEIGHT);
 
     LoadWindowIcon();
