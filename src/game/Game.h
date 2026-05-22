@@ -39,6 +39,7 @@ public:
 
     bool waitingForStart = true;
     bool turboMode = false;
+    bool infiniteLives = false;
 
     std::string inputNameBuffer;
     std::string inputAuthorBuffer;

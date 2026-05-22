@@ -85,13 +85,15 @@ void DrawMenuMain(Game& game) {
     const bool isFullscreen = IsWindowFullscreen();
     std::string fullscreenText = isFullscreen ? "FULLSCREEN: ON" : "FULLSCREEN: OFF";
     std::string turboText = game.turboMode ? "TURBO: ON" : "TURBO: OFF";
+    std::string infText = game.infiniteLives ? "INF LIVES: ON" : "INF LIVES: OFF";
 
     const float paddingX = 14.0f * game.layout.Scale();
     const float toggleBtnH = Config::UI::BUTTON_HEIGHT * game.layout.Scale();
     const float fullscreenBtnW = static_cast<float>(MeasureText(fullscreenText.c_str(), fontSize)) + paddingX * 2.0f;
     const float turboBtnW = static_cast<float>(MeasureText(turboText.c_str(), fontSize)) + paddingX * 2.0f;
+    const float infBtnW = static_cast<float>(MeasureText(infText.c_str(), fontSize)) + paddingX * 2.0f;
     const float toggleGap = 14.0f;
-    const float totalToggleW = fullscreenBtnW + turboBtnW + toggleGap;
+    const float totalToggleW = fullscreenBtnW + turboBtnW + infBtnW + toggleGap * 2.0f;
     const float toggleStartX = (screenW - totalToggleW) / 2.0f;
     const float bottomY = screenH - toggleBtnH - 24.0f;
 
@@ -103,15 +105,9 @@ void DrawMenuMain(Game& game) {
         game.turboMode = !game.turboMode;
     }
 
-    // Hint line above toggles. Render at a clean multiple of raylib's 10px base font
-    // and stick to plain ASCII so glyph kerning stays even.
-    constexpr int hintSize = 20;
-    const char* hintText = "F11 toggles fullscreen     T toggles turbo";
-    const int hintW = MeasureText(hintText, hintSize);
-    DrawText(hintText,
-        screenW / 2 - hintW / 2,
-        static_cast<int>(bottomY) - hintSize - 10,
-        hintSize, RAYWHITE);
+    if (UI::Button({ toggleStartX + fullscreenBtnW + turboBtnW + toggleGap * 2.0f, bottomY, infBtnW, toggleBtnH }, infText, game.layout)) {
+        game.infiniteLives = !game.infiniteLives;
+    }
 }
 
 void DrawMenuEditorMain(Game& game) {

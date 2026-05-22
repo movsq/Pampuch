@@ -24,9 +24,11 @@ void Update(Game& game, float dt) {
             const float dy = ghost.pixelPos.y - game.player.pixelPos.y;
 
             if ((dx * dx + dy * dy) < colRad * colRad) {
-                --game.player.lives;
+                if (!game.infiniteLives) {
+                    --game.player.lives;
+                }
 
-                if (game.player.lives > 0) {
+                if (game.infiniteLives || game.player.lives > 0) {
                     game.ResetLevelState();
                 } else {
                     game.currentState = GameState::GameOver;
@@ -140,12 +142,25 @@ void Draw(Game& game) {
         game.currentState = GameState::MenuMain;
     }
 
-    // TURBO badge (right-aligned, left of quit)
+    // Status badges (right-aligned, left of quit). Read-only — toggled from main menu.
+    const float pillH = barH * 0.42f;
+    float badgeRightX = quitR.x;
+    if (game.infiniteLives) {
+        const float pillTextW = static_cast<float>(MeasureText("INF LIVES", fontSize));
+        const float pillW = pillTextW + pad;
+        const Rectangle pill = { badgeRightX - pad - pillW, (barH - pillH) / 2.0f, pillW, pillH };
+        DrawRectangleRounded(pill, 1.0f, 8, Fade(GREEN, 0.75f));
+        DrawRectangleRoundedLinesEx(pill, 1.0f, 8, 1.5f, Fade(WHITE, 0.55f));
+        DrawText("INF LIVES",
+            static_cast<int>(pill.x + (pill.width - pillTextW) / 2.0f),
+            static_cast<int>(pill.y + (pill.height - fontSize) / 2.0f),
+            fontSize, WHITE);
+        badgeRightX = pill.x;
+    }
     if (game.turboMode) {
-        const float pillH = barH * 0.42f;
         const float pillTextW = static_cast<float>(MeasureText("TURBO", fontSize));
         const float pillW = pillTextW + pad;
-        const Rectangle pill = { quitR.x - pad - pillW, (barH - pillH) / 2.0f, pillW, pillH };
+        const Rectangle pill = { badgeRightX - pad - pillW, (barH - pillH) / 2.0f, pillW, pillH };
         DrawRectangleRounded(pill, 1.0f, 8, Fade(RED, 0.75f));
         DrawRectangleRoundedLinesEx(pill, 1.0f, 8, 1.5f, Fade(WHITE, 0.55f));
         DrawText("TURBO",
