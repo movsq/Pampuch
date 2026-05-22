@@ -11,6 +11,10 @@ Pampuch itself was a remake of **Pampúch a Duch** by Dušan Blaško (1986).
 
 See the [Releases](../../releases) page for a pre-built binary.
 
+| Main menu | Gameplay | Level editor |
+| :-: | :-: | :-: |
+| ![Main menu](docs/screenshots/main-menu.png) | ![Gameplay](docs/screenshots/gameplay.png) | ![Level editor](docs/screenshots/level-editor.png) |
+
 ## Building from source
 
 Requirements: CMake 3.20+, a C++20 compiler, OpenGL, and git (CMake fetches
