@@ -23,13 +23,16 @@ public:
         bool playerBlocked  = false;  // ASM [0x190] / arg_4 target
     };
 
-    // PAMPUCH_40 effect-queue stub (cseg02:010E). When invoked, the original
+    // PAMPUCH_40 effect-queue entry (cseg02:010E). When invoked, the original
     // stores a far pointer (ds:offset) to effect descriptor data into
-    // dword_7418, sets byte_7416 = 1, and zeroes word_741C; an external tick
-    // handler reads through that pointer and renders the effect.
+    // dword_7418, sets byte_7416 = 1, and zeroes word_741C; the per-tick player
+    // PAMPUCH_41 (cseg02:00A9) reads through that pointer to drive the PC
+    // speaker (PIT ch.2 divisor = byte * 0x21), stopping on the byte that
+    // yields 0x20DF — i.e. 0xFF (== 255).
     // The C++ callback receives the equivalent: a pointer to the effect data
     // and its length. At the PAMPUCH_35+0x121 call site, the data is always
-    // unk_6980 = {5, 4, 3, 2, 1, 0xFF, 0, 0, 0, 0} (dseg10:0010).
+    // unk_6980 = {5, 4, 3, 2, 1, 0xFF} (dseg10:0010): a descending 5-note
+    // jingle, 0xFF-terminated.
     using EffectCallback = std::function<void(const std::uint8_t* effectData, std::size_t dataLen)>;
     GridCoord gridPos{ 0, 0 };
     Vector2 pixelPos{ 0.0f, 0.0f };

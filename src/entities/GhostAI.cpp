@@ -76,14 +76,28 @@ Ghost::CollisionResult Ghost::CheckCollision_PAMPUCH35(
     }
 
     // loc_1554: post-loop effect dispatch. ASM pushes ds:offset unk_6980
-    // (dseg10:0010) and calls PAMPUCH_40. unk_6980 = {5,4,3,2,1,0xFF,0,0,0,0}
-    // — a countdown effect descriptor with 0xFF sentinel. PAMPUCH_40
-    // (cseg02:010E) stores that pointer into dword_7418, raises byte_7416,
-    // and zeroes word_741C; an external tick handler walks the data to render
-    // the effect (likely a player-contact flash/jingle).
+    // (dseg10:0010) and calls PAMPUCH_40 — the call passes only a pointer, no
+    // length, so the consumer self-terminates on the data.
+    //
+    // Verified against the full chain (producer + consumer):
+    //   - PAMPUCH_40 (cseg02:010E) just latches state: dword_7418 = pointer,
+    //     byte_7416 = 1 (effect active), word_741C = 0 (cursor). No length.
+    //     (Gated on byte_741E != 0, an "effects enabled" flag.)
+    //   - PAMPUCH_41 (cseg02:00A9) is the per-tick PC-speaker player. Each tick
+    //     it reads one byte b at [dword_7418 + word_741C], advances the cursor,
+    //     computes bx = b * 0x21 (a PIT ch.2 divisor), and STOPS when
+    //     bx == 0x20DF. 0x20DF / 0x21 == 255, so 0xFF is the unique terminator;
+    //     on it the handler clears byte_7416 and silences the speaker (port 61h).
+    //
+    // So unk_6980 = {5,4,3,2,1} is a descending 5-note jingle (rising pitch as
+    // the divisor shrinks), 0xFF-terminated. The 0xFF is consumed as the stop
+    // marker, not played. The 0x00 bytes that follow in dseg10 (out to unk_6A80
+    // at 0x0110) are segment padding: a 0 byte would compute 0, never hit the
+    // 0x20DF terminator, and run the player off the end — so they are provably
+    // NOT part of the descriptor. 6 bytes is the whole payload.
     if (result.playerBlocked && onPlayerInteractionEffect) {
         static constexpr std::uint8_t kEffectData_unk6980[] = {
-            5, 4, 3, 2, 1, 0xFF, 0, 0, 0, 0  // dseg10:0010 (unk_6980)
+            5, 4, 3, 2, 1, 0xFF  // dseg10:0010 (unk_6980), 0xFF-terminated
         };
         onPlayerInteractionEffect(kEffectData_unk6980, sizeof(kEffectData_unk6980));
     }
