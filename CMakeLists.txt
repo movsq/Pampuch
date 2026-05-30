@@ -65,6 +65,17 @@ else()
 endif()
 
 # -----------------------------------------------------------------------------
+# Static runtime for MinGW/GCC so the release .exe is self-contained.
+# Without this, the binary dynamically links libgcc_s_seh-1.dll,
+# libstdc++-6.dll, and libwinpthread-1.dll from the MSYS2 toolchain — DLLs
+# that aren't present on a normal user's machine ("...dll was not found").
+# -static folds all three into the executable; MSVC is unaffected.
+# -----------------------------------------------------------------------------
+if(WIN32 AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_link_options(Pampuch PRIVATE -static -static-libgcc -static-libstdc++)
+endif()
+
+# -----------------------------------------------------------------------------
 # Post-build: copy runtime assets next to the executable
 # -----------------------------------------------------------------------------
 set(RUNTIME_ASSETS
